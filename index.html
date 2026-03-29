@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrafficOS — Smart Traffic Control</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070d;
+  --s1: #0e0e18;
+  --s2: #13131f;
+  --s3: #1a1a28;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #eeeef8;
+  --muted: rgba(238,238,248,0.4);
+  --muted2: rgba(238,238,248,0.2);
+  --red: #ff4444;
+  --rg: rgba(255,68,68,0.18);
+  --rd: rgba(255,68,68,0.07);
+  --yellow: #ffc844;
+  --yg: rgba(255,200,68,0.18);
+  --yd: rgba(255,200,68,0.07);
+  --green: #00e5a0;
+  --gg: rgba(0,229,160,0.18);
+  --gd: rgba(0,229,160,0.07);
+  --accent: #6c63ff;
+  --accent2: #9d97ff;
+  --ad: rgba(108,99,255,0.12);
+  --font-h: 'Bebas Neue', sans-serif;
+  --font-b: 'Outfit', sans-serif;
+  --font-m: 'DM Mono', monospace;
+  --r: 16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+
+.amb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;transition:all 1.2s ease}
+.amb1{width:600px;height:600px;top:-200px;left:-150px;background:radial-gradient(circle,rgba(108,99,255,0.1) 0%,transparent 70%)}
+.amb2{width:500px;height:500px;bottom:-200px;right:-100px;background:radial-gradient(circle,rgba(0,229,160,0.07) 0%,transparent 70%)}
+.amb3{width:300px;height:300px;top:40%;left:40%;background:radial-gradient(circle,rgba(255,68,68,0.05) 0%,transparent 70%);transition:all 0.8s ease}
+
+/* ── DB TOAST ── */
+#db-toast{position:fixed;bottom:24px;right:24px;z-index:9998;font-family:var(--font-m);font-size:11px;padding:8px 16px;border-radius:100px;border:0.5px solid var(--border2);background:var(--s2);color:var(--muted);opacity:0;transform:translateY(8px);transition:all 0.3s;pointer-events:none}
+#db-toast.show{opacity:1;transform:translateY(0)}
+#db-toast.ok{color:var(--green);border-color:rgba(0,229,160,0.3)}
+#db-toast.err{color:var(--red);border-color:rgba(255,68,68,0.3)}
+
+.wrap{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:0 20px 80px}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:24px 0 32px;flex-wrap:wrap;gap:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.brand-icon::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent)}
+.brand-icon svg{width:22px;height:22px;position:relative;z-index:1}
+.brand-name{font-family:var(--font-h);font-size:28px;letter-spacing:0.05em;color:var(--text)}
+.brand-ver{font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-top:-2px}
+
+.header-pills{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-family:var(--font-m);font-size:10px;border:0.5px solid var(--border2);background:var(--s1)}
+.pill.live{color:var(--green);border-color:rgba(0,229,160,0.25)}
+.pill.device{color:var(--muted)}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:currentColor;position:relative}
+.pill.live .pill-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--green);opacity:0.35;animation:ripple 2s infinite}
+@keyframes ripple{0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(2);opacity:0}}
+#clock-pill{color:var(--muted2);min-width:78px;text-align:center}
+
+.mode-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px}
+.mode-title{font-family:var(--font-h);font-size:42px;letter-spacing:0.03em;line-height:1;color:var(--text)}
+.mode-title span{color:var(--accent2)}
+.mode-switch{display:flex;background:var(--s2);border:0.5px solid var(--border);border-radius:14px;padding:4px;gap:4px}
+.mode-btn{padding:10px 24px;border-radius:10px;font-family:var(--font-b);font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.3s;letter-spacing:0.01em}
+.mode-btn.active{background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(108,99,255,0.35)}
+.mode-btn:hover:not(.active){color:var(--text);background:var(--s3)}
+
+.top-section{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:24px}
+@media(max-width:700px){.top-section{grid-template-columns:1fr}}
+
+.traffic-light-visual{display:flex;flex-direction:column;align-items:center;gap:0}
+.tl-housing{background:#111118;border:1.5px solid rgba(255,255,255,0.08);border-radius:20px;padding:12px 10px;display:flex;flex-direction:column;gap:10px;position:relative;width:80px}
+.tl-housing::after{content:'TRAFFIC\ALIGHT';white-space:pre;position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:7px;color:var(--muted2);letter-spacing:0.1em;text-align:center;line-height:1.4}
+.tl-light{width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);position:relative}
+.tl-light.on-red{background:var(--red);border-color:var(--red);box-shadow:0 0 24px 8px var(--rg)}
+.tl-light.on-yellow{background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 24px 8px var(--yg)}
+.tl-light.on-green{background:var(--green);border-color:var(--green);box-shadow:0 0 24px 8px var(--gg)}
+.tl-light.off-red{background:rgba(255,68,68,0.06)}
+.tl-light.off-yellow{background:rgba(255,200,68,0.06)}
+.tl-light.off-green{background:rgba(0,229,160,0.06)}
+.tl-lens{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all 0.5s}
+.tl-light.on-red .tl-lens,.tl-light.on-yellow .tl-lens,.tl-light.on-green .tl-lens{background:rgba(255,255,255,0.45)}
+.tl-stem{width:8px;height:32px;background:linear-gradient(to bottom,#1a1a28,#0e0e18);border-left:1px solid rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.03)}
+.tl-base{width:36px;height:6px;background:#111118;border-radius:4px;border:1px solid rgba(255,255,255,0.05)}
+
+.card{background:var(--s1);border:0.5px solid var(--border);border-radius:var(--r);transition:border-color 0.4s,box-shadow 0.4s}
+
+#manual-panel{display:flex;flex-direction:column;gap:16px}
+.lights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.lights-grid{grid-template-columns:1fr}}
+
+.lcard{padding:20px;display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.35s}
+.lcard::before{content:'';position:absolute;inset:0;border-radius:var(--r);opacity:0;transition:opacity 0.4s;pointer-events:none}
+.lcard.red::before{background:radial-gradient(ellipse at 50% 0%,var(--rd) 0%,transparent 70%)}
+.lcard.yellow::before{background:radial-gradient(ellipse at 50% 0%,var(--yd) 0%,transparent 70%)}
+.lcard.green::before{background:radial-gradient(ellipse at 50% 0%,var(--gd) 0%,transparent 70%)}
+.lcard.on::before{opacity:1}
+.lcard.on.red{border-color:rgba(255,68,68,0.28);box-shadow:0 8px 32px rgba(255,68,68,0.07)}
+.lcard.on.yellow{border-color:rgba(255,200,68,0.28);box-shadow:0 8px 32px rgba(255,200,68,0.07)}
+.lcard.on.green{border-color:rgba(0,229,160,0.28);box-shadow:0 8px 32px rgba(0,229,160,0.07)}
+
+.lcard-top{display:flex;align-items:center;justify-content:space-between}
+.lcard-orb{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;transition:all 0.4s}
+.lcard.red .lcard-orb{background:var(--rd);border:1px solid rgba(255,68,68,0.15)}
+.lcard.yellow .lcard-orb{background:var(--yd);border:1px solid rgba(255,200,68,0.15)}
+.lcard.green .lcard-orb{background:var(--gd);border:1px solid rgba(0,229,160,0.15)}
+.orb-dot{width:16px;height:16px;border-radius:50%;transition:all 0.4s}
+.lcard.red .orb-dot{background:rgba(255,68,68,0.3);border:2px solid rgba(255,68,68,0.5)}
+.lcard.yellow .orb-dot{background:rgba(255,200,68,0.25);border:2px solid rgba(255,200,68,0.5)}
+.lcard.green .orb-dot{background:rgba(0,229,160,0.25);border:2px solid rgba(0,229,160,0.5)}
+.lcard.on.red .orb-dot{background:var(--red);border-color:var(--red);box-shadow:0 0 12px var(--rg)}
+.lcard.on.yellow .orb-dot{background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 12px var(--yg)}
+.lcard.on.green .orb-dot{background:var(--green);border-color:var(--green);box-shadow:0 0 12px var(--gg)}
+
+.tog{width:50px;height:27px;border-radius:100px;background:var(--s3);border:1px solid var(--border2);position:relative;cursor:pointer;transition:all 0.35s;flex-shrink:0}
+.tog::after{content:'';position:absolute;width:19px;height:19px;border-radius:50%;background:rgba(255,255,255,0.28);top:3px;left:3px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),background 0.35s}
+.tog.on::after{transform:translateX(23px);background:#fff}
+.lcard.on.red .tog{background:var(--red);border-color:var(--red);box-shadow:0 0 14px var(--rg)}
+.lcard.on.yellow .tog{background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 14px var(--yg)}
+.lcard.on.yellow .tog::after{background:#3a2800}
+.lcard.on.green .tog{background:var(--green);border-color:var(--green);box-shadow:0 0 14px var(--gg)}
+.lcard.on.green .tog::after{background:#002a1a}
+
+.lcard-name{font-size:16px;font-weight:700;letter-spacing:-0.01em;color:var(--text);margin-top:2px}
+.lcard-gpio{font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:3px}
+.lcard-divider{height:1px;background:var(--border)}
+.lcard-status{display:flex;align-items:center;justify-content:space-between}
+.status-badge{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:100px;font-family:var(--font-m);font-size:10px;font-weight:500;border:0.5px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted);transition:all 0.4s}
+.lcard.on.red .status-badge{background:var(--rd);color:var(--red);border-color:rgba(255,68,68,0.2)}
+.lcard.on.yellow .status-badge{background:var(--yd);color:var(--yellow);border-color:rgba(255,200,68,0.2)}
+.lcard.on.green .status-badge{background:var(--gd);color:var(--green);border-color:rgba(0,229,160,0.2)}
+.sbdot{width:5px;height:5px;border-radius:50%;background:var(--muted2);transition:all 0.4s}
+.lcard.on.red .sbdot{background:var(--red);box-shadow:0 0 5px var(--red)}
+.lcard.on.yellow .sbdot{background:var(--yellow);box-shadow:0 0 5px var(--yellow)}
+.lcard.on.green .sbdot{background:var(--green);box-shadow:0 0 5px var(--green)}
+.volt-val{font-family:var(--font-m);font-size:10px;color:var(--muted);background:var(--s2);padding:3px 8px;border-radius:6px;border:0.5px solid var(--border);transition:all 0.4s}
+.lcard.on.red .volt-val{color:var(--red);border-color:rgba(255,68,68,0.2)}
+.lcard.on.yellow .volt-val{color:var(--yellow);border-color:rgba(255,200,68,0.2)}
+.lcard.on.green .volt-val{color:var(--green);border-color:rgba(0,229,160,0.2)}
+
+#auto-panel{display:none;flex-direction:column;gap:20px}
+#auto-panel.visible{display:flex}
+.auto-top{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.auto-top{grid-template-columns:1fr}}
+
+.countdown-card{padding:24px;display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden}
+.cd-label{font-family:var(--font-m);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em}
+.cd-active-light{display:flex;align-items:center;gap:12px;margin:4px 0}
+.cd-light-orb{width:20px;height:20px;border-radius:50%;transition:all 0.5s}
+.cd-light-name{font-family:var(--font-h);font-size:32px;letter-spacing:0.04em;transition:color 0.5s}
+.cd-timer-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin:8px 0}
+.cd-timer-svg{transform:rotate(-90deg)}
+.cd-timer-track{fill:none;stroke:var(--border2);stroke-width:4}
+.cd-timer-fill{fill:none;stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke 0.5s}
+.cd-timer-num{position:absolute;font-family:var(--font-h);font-size:48px;letter-spacing:0.05em;text-align:center;transition:color 0.5s}
+.cd-timer-unit{position:absolute;bottom:18px;font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:0.1em}
+
+.cd-seq{display:flex;align-items:center;gap:8px;margin-top:4px}
+.cd-seq-dot{width:10px;height:10px;border-radius:50%;opacity:0.3;transition:all 0.4s;border:1.5px solid}
+.cd-seq-dot.active{opacity:1;box-shadow:0 0 8px currentColor}
+.cd-seq-dot.red-d{color:var(--red);border-color:var(--red);background:transparent}
+.cd-seq-dot.red-d.active{background:var(--red)}
+.cd-seq-dot.yellow-d{color:var(--yellow);border-color:var(--yellow);background:transparent}
+.cd-seq-dot.yellow-d.active{background:var(--yellow)}
+.cd-seq-dot.green-d{color:var(--green);border-color:var(--green);background:transparent}
+.cd-seq-dot.green-d.active{background:var(--green)}
+.cd-seq-arrow{font-family:var(--font-m);font-size:10px;color:var(--muted2)}
+
+.timer-settings-card{padding:22px;display:flex;flex-direction:column;gap:16px}
+.ts-title{font-size:14px;font-weight:600;color:var(--text)}
+.ts-subtitle{font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:2px}
+.timer-inputs{display:flex;flex-direction:column;gap:12px}
+.timer-input-row{display:flex;align-items:center;gap:12px}
+.ti-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ti-label{font-family:var(--font-m);font-size:11px;color:var(--muted);width:52px;flex-shrink:0}
+.ti-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--s3);outline:none;cursor:pointer}
+.ti-slider.red-s::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--red);cursor:pointer;box-shadow:0 0 8px var(--rg)}
+.ti-slider.yellow-s::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--yellow);cursor:pointer;box-shadow:0 0 8px var(--yg)}
+.ti-slider.green-s::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 8px var(--gg)}
+.ti-val{font-family:var(--font-m);font-size:12px;font-weight:500;width:36px;text-align:right;flex-shrink:0}
+.ti-val.red-v{color:var(--red)}
+.ti-val.yellow-v{color:var(--yellow)}
+.ti-val.green-v{color:var(--green)}
+
+.auto-start-btn{width:100%;padding:13px;border-radius:12px;border:none;font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;letter-spacing:0.02em}
+.auto-start-btn.start{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 6px 24px rgba(108,99,255,0.3)}
+.auto-start-btn.start:hover{box-shadow:0 8px 32px rgba(108,99,255,0.45);transform:translateY(-1px)}
+.auto-start-btn.stop{background:rgba(255,68,68,0.1);color:var(--red);border:1px solid rgba(255,68,68,0.25)}
+.auto-start-btn.stop:hover{background:rgba(255,68,68,0.16)}
+
+.auto-seq-display{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.seq-card{padding:16px;display:flex;flex-direction:column;gap:10px;transition:all 0.4s;border-radius:var(--r)}
+.seq-card.seq-red{border-color:rgba(255,68,68,0.1)}
+.seq-card.seq-yellow{border-color:rgba(255,200,68,0.1)}
+.seq-card.seq-green{border-color:rgba(0,229,160,0.1)}
+.seq-card.current.seq-red{border-color:rgba(255,68,68,0.3);background:rgba(255,68,68,0.04);box-shadow:0 0 24px rgba(255,68,68,0.07)}
+.seq-card.current.seq-yellow{border-color:rgba(255,200,68,0.3);background:rgba(255,200,68,0.04);box-shadow:0 0 24px rgba(255,200,68,0.07)}
+.seq-card.current.seq-green{border-color:rgba(0,229,160,0.3);background:rgba(0,229,160,0.04);box-shadow:0 0 24px rgba(0,229,160,0.07)}
+.seq-dot{width:12px;height:12px;border-radius:50%;opacity:0.25;transition:all 0.5s}
+.seq-card.current .seq-dot{opacity:1}
+.seq-card.seq-red .seq-dot{background:var(--red);box-shadow:0 0 10px var(--rg)}
+.seq-card.seq-yellow .seq-dot{background:var(--yellow);box-shadow:0 0 10px var(--yg)}
+.seq-card.seq-green .seq-dot{background:var(--green);box-shadow:0 0 10px var(--gg)}
+.seq-name{font-size:13px;font-weight:600;color:var(--text);opacity:0.4;transition:opacity 0.4s}
+.seq-card.current .seq-name{opacity:1}
+.seq-dur{font-family:var(--font-m);font-size:10px;color:var(--muted)}
+.seq-status{font-family:var(--font-m);font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em}
+.seq-card.current .seq-status{color:var(--accent2)}
+
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:640px){.bottom-row{grid-template-columns:1fr}}
+
+.panel-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ph-icon{width:32px;height:32px;border-radius:9px;background:var(--ad);border:0.5px solid rgba(108,99,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ph-icon svg{width:16px;height:16px}
+.ph-title{font-size:13px;font-weight:600}
+.ph-sub{font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:2px}
+
+.db-wrap{border-radius:10px;overflow:hidden;border:0.5px solid var(--border)}
+.db-tbl{width:100%;border-collapse:collapse;font-family:var(--font-m);font-size:11px}
+.db-tbl thead tr{background:var(--s2)}
+.db-tbl th{padding:8px 11px;text-align:left;font-weight:500;color:var(--muted);font-size:10px;letter-spacing:0.05em;border-bottom:0.5px solid var(--border)}
+.db-tbl td{padding:10px 11px;border-bottom:0.5px solid var(--border);color:var(--text);transition:color 0.4s}
+.db-tbl tr:last-child td{border-bottom:none}
+.db-tbl .c-id{color:var(--accent2)}
+.db-tbl .c-ts{color:var(--muted);font-size:10px}
+.db-tbl .c-on{font-weight:500}
+.db-tbl .c-off{color:var(--muted)}
+
+.db-meta{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.db-meta-item{flex:1;min-width:100px;background:var(--s2);border:0.5px solid var(--border);border-radius:10px;padding:9px 12px}
+.db-meta-label{font-family:var(--font-m);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.db-meta-val{font-family:var(--font-m);font-size:10px;word-break:break-all}
+.db-meta-val.accent{color:var(--accent2)}
+.db-meta-val.live{color:var(--green)}
+
+.activity-feed{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.activity-feed::-webkit-scrollbar{width:3px}
+.activity-feed::-webkit-scrollbar-track{background:transparent}
+.activity-feed::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.act-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:9px;background:var(--s2);font-family:var(--font-m);font-size:10px;color:var(--muted);animation:slideup 0.25s ease}
+@keyframes slideup{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.act-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.act-dot.r{background:var(--red)}
+.act-dot.y{background:var(--yellow)}
+.act-dot.g{background:var(--green)}
+.act-dot.s{background:var(--accent2)}
+.act-dot.a{background:var(--muted)}
+.act-time{margin-left:auto;font-size:9px;opacity:0.5;white-space:nowrap}
+.act-msg{flex:1}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-card{padding:16px 18px}
+.stat-lbl{font-family:var(--font-m);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.stat-val{font-family:var(--font-h);font-size:30px;letter-spacing:0.04em;color:var(--text);line-height:1}
+.stat-unit{font-family:var(--font-m);font-size:11px;color:var(--muted);margin-left:3px}
+
+footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer-l{font-family:var(--font-m);font-size:10px;color:var(--muted2)}
+.footer-tags{display:flex;gap:6px;flex-wrap:wrap}
+.ftag{font-family:var(--font-m);font-size:9px;color:var(--muted2);padding:3px 8px;border-radius:6px;border:0.5px solid var(--border);text-transform:uppercase;letter-spacing:0.08em}
+</style>
+</head>
+<body>
+
+<div class="amb amb1"></div>
+<div class="amb amb2"></div>
+<div class="amb amb3" id="amb3"></div>
+<div id="db-toast">●</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 22 22" fill="none">
+          <circle cx="11" cy="5"  r="3.5" fill="white" opacity="0.95"/>
+          <circle cx="11" cy="11" r="3.5" fill="white" opacity="0.5"/>
+          <circle cx="11" cy="17" r="3.5" fill="white" opacity="0.22"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">TrafficOS</div>
+        <div class="brand-ver">v3.0.0 · smart control</div>
+      </div>
+    </div>
+    <div class="header-pills">
+      <div class="pill live"><div class="pill-dot"></div>Supabase Live</div>
+      <div class="pill device">⚡ ESP32 Online</div>
+      <div class="pill" id="clock-pill">--:--:--</div>
+    </div>
+  </header>
+
+  <div class="mode-bar">
+    <div>
+      <div class="mode-title">Traffic <span id="mode-label-title">Manual</span></div>
+    </div>
+    <div class="mode-switch">
+      <button class="mode-btn active" id="btn-manual" onclick="setMode('manual')">⚙ Manual</button>
+      <button class="mode-btn" id="btn-auto" onclick="setMode('auto')">▶ Auto Sequence</button>
+    </div>
+  </div>
+
+  <div class="top-section">
+
+    <div id="manual-panel">
+      <div class="lights-grid">
+
+        <div class="lcard card red" id="lcard-red" onclick="manualToggle('red')">
+          <div class="lcard-top">
+            <div class="lcard-orb"><div class="orb-dot"></div></div>
+            <div class="tog" id="tog-red"></div>
+          </div>
+          <div>
+            <div class="lcard-name">Red Light</div>
+            <div class="lcard-gpio">GPIO 13 · 220Ω</div>
+          </div>
+          <div class="lcard-divider"></div>
+          <div class="lcard-status">
+            <div class="status-badge"><div class="sbdot"></div><span id="st-red">OFFLINE</span></div>
+            <div class="volt-val" id="vt-red">0.0V</div>
+          </div>
+        </div>
+
+        <div class="lcard card yellow" id="lcard-yellow" onclick="manualToggle('yellow')">
+          <div class="lcard-top">
+            <div class="lcard-orb"><div class="orb-dot"></div></div>
+            <div class="tog" id="tog-yellow"></div>
+          </div>
+          <div>
+            <div class="lcard-name">Yellow Light</div>
+            <div class="lcard-gpio">GPIO 12 · 220Ω</div>
+          </div>
+          <div class="lcard-divider"></div>
+          <div class="lcard-status">
+            <div class="status-badge"><div class="sbdot"></div><span id="st-yellow">OFFLINE</span></div>
+            <div class="volt-val" id="vt-yellow">0.0V</div>
+          </div>
+        </div>
+
+        <div class="lcard card green" id="lcard-green" onclick="manualToggle('green')">
+          <div class="lcard-top">
+            <div class="lcard-orb"><div class="orb-dot"></div></div>
+            <div class="tog" id="tog-green"></div>
+          </div>
+          <div>
+            <div class="lcard-name">Green Light</div>
+            <div class="lcard-gpio">GPIO 14 · 220Ω</div>
+          </div>
+          <div class="lcard-divider"></div>
+          <div class="lcard-status">
+            <div class="status-badge"><div class="sbdot"></div><span id="st-green">OFFLINE</span></div>
+            <div class="volt-val" id="vt-green">0.0V</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="auto-panel">
+      <div class="auto-top">
+
+        <div class="card countdown-card">
+          <div class="cd-label">Currently Active</div>
+          <div class="cd-active-light">
+            <div class="cd-light-orb" id="cd-orb"></div>
+            <div class="cd-light-name" id="cd-name">—</div>
+          </div>
+          <div class="cd-timer-wrap">
+            <svg class="cd-timer-svg" width="120" height="120" viewBox="0 0 120 120">
+              <circle class="cd-timer-track" cx="60" cy="60" r="52"/>
+              <circle class="cd-timer-fill" id="cd-ring" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7" stroke="var(--green)"/>
+            </svg>
+            <div class="cd-timer-num" id="cd-num">—</div>
+            <div class="cd-timer-unit">SEC</div>
+          </div>
+          <div class="cd-seq">
+            <div class="cd-seq-dot red-d" id="seq-r"></div>
+            <div class="cd-seq-arrow">→</div>
+            <div class="cd-seq-dot yellow-d" id="seq-y"></div>
+            <div class="cd-seq-arrow">→</div>
+            <div class="cd-seq-dot green-d" id="seq-g"></div>
+            <div class="cd-seq-arrow">↺</div>
+          </div>
+        </div>
+
+        <div class="card timer-settings-card">
+          <div>
+            <div class="ts-title">Timer Settings</div>
+            <div class="ts-subtitle">Drag to set duration per light</div>
+          </div>
+          <div class="timer-inputs">
+            <div class="timer-input-row">
+              <div class="ti-color" style="background:var(--red)"></div>
+              <div class="ti-label" style="color:var(--red)">Red</div>
+              <input type="range" class="ti-slider red-s" id="dur-red" min="2" max="30" value="5" oninput="updateDur('red',this.value)">
+              <div class="ti-val red-v" id="durval-red">5s</div>
+            </div>
+            <div class="timer-input-row">
+              <div class="ti-color" style="background:var(--yellow)"></div>
+              <div class="ti-label" style="color:var(--yellow)">Yellow</div>
+              <input type="range" class="ti-slider yellow-s" id="dur-yellow" min="1" max="10" value="2" oninput="updateDur('yellow',this.value)">
+              <div class="ti-val yellow-v" id="durval-yellow">2s</div>
+            </div>
+            <div class="timer-input-row">
+              <div class="ti-color" style="background:var(--green)"></div>
+              <div class="ti-label" style="color:var(--green)">Green</div>
+              <input type="range" class="ti-slider green-s" id="dur-green" min="2" max="30" value="5" oninput="updateDur('green',this.value)">
+              <div class="ti-val green-v" id="durval-green">5s</div>
+            </div>
+          </div>
+          <button class="auto-start-btn start" id="auto-btn" onclick="toggleAuto()">▶ Start Auto Sequence</button>
+        </div>
+
+      </div>
+
+      <div class="auto-seq-display" style="margin-top:14px">
+        <div class="card seq-card seq-red" id="seq-card-red">
+          <div class="seq-dot"></div>
+          <div class="seq-name">Red Phase</div>
+          <div class="seq-dur" id="seq-dur-red">5 seconds</div>
+          <div class="seq-status" id="seq-st-red">Waiting</div>
+        </div>
+        <div class="card seq-card seq-yellow" id="seq-card-yellow">
+          <div class="seq-dot"></div>
+          <div class="seq-name">Yellow Phase</div>
+          <div class="seq-dur" id="seq-dur-yellow">2 seconds</div>
+          <div class="seq-status" id="seq-st-yellow">Waiting</div>
+        </div>
+        <div class="card seq-card seq-green" id="seq-card-green">
+          <div class="seq-dot"></div>
+          <div class="seq-name">Green Phase</div>
+          <div class="seq-dur" id="seq-dur-green">5 seconds</div>
+          <div class="seq-status" id="seq-st-green">Waiting</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="traffic-light-visual">
+      <div class="traffic-pole">
+        <div class="tl-housing">
+          <div class="tl-light off-red"    id="tl-red">   <div class="tl-lens"></div></div>
+          <div class="tl-light off-yellow" id="tl-yellow"><div class="tl-lens"></div></div>
+          <div class="tl-light off-green"  id="tl-green"> <div class="tl-lens"></div></div>
+        </div>
+        <div class="tl-stem"></div>
+        <div class="tl-base"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-row">
+
+    <div class="card" style="padding:22px">
+      <div class="panel-head">
+        <div class="ph-icon">
+          <svg viewBox="0 0 16 16" fill="none">
+            <ellipse cx="8" cy="4" rx="5" ry="2" stroke="#9d97ff" stroke-width="1.2"/>
+            <path d="M3 4v4c0 1.1 2.24 2 5 2s5-.9 5-2V4" stroke="#9d97ff" stroke-width="1.2"/>
+            <path d="M3 8v4c0 1.1 2.24 2 5 2s5-.9 5-2V8" stroke="#9d97ff" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ph-title">Supabase Record</div>
+          <div class="ph-sub">traffic_light_control · PostgreSQL</div>
+        </div>
+      </div>
+      <div class="db-wrap">
+        <table class="db-tbl">
+          <thead><tr><th>id</th><th>red</th><th>yellow</th><th>green</th><th>mode</th><th>updated_at</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="c-id">1</td>
+              <td class="c-off" id="db-red">false</td>
+              <td class="c-off" id="db-yellow">false</td>
+              <td class="c-off" id="db-green">false</td>
+              <td class="c-off" id="db-mode">manual</td>
+              <td class="c-ts" id="db-ts">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="db-meta">
+        <div class="db-meta-item">
+          <div class="db-meta-label">Endpoint</div>
+          <div class="db-meta-val accent">vszeihhsgzmqadnrwckq<br>.supabase.co</div>
+        </div>
+        <div class="db-meta-item">
+          <div class="db-meta-label">Protocol</div>
+          <div class="db-meta-val live">REST PATCH</div>
+        </div>
+        <div class="db-meta-item">
+          <div class="db-meta-label">WiFi</div>
+          <div class="db-meta-val" style="color:var(--muted)">Joshua-2.4G</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:22px">
+      <div class="panel-head">
+        <div class="ph-icon">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 4h10M3 8h7M3 12h5" stroke="#9d97ff" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ph-title">Activity Log</div>
+          <div class="ph-sub">Real-time command history</div>
+        </div>
+      </div>
+      <div class="activity-feed" id="act-feed">
+        <div class="act-item">
+          <div class="act-dot s"></div>
+          <div class="act-msg">System initialized · TrafficOS v3.0.0</div>
+          <div class="act-time" id="init-time">--:--:--</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="stats-row" style="margin-top:16px">
+    <div class="card stat-card">
+      <div class="stat-lbl">Commands</div>
+      <div class="stat-val" id="s-cmds">0</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-lbl">Active Lights</div>
+      <div class="stat-val" id="s-active">0<span class="stat-unit">/3</span></div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-lbl">DB Writes</div>
+      <div class="stat-val" id="s-writes">0</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-lbl">Cycles (Auto)</div>
+      <div class="stat-val" id="s-cycles">0</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-l">TrafficOS v3.0.0 · Supabase REST · ESP32 · GPIO 12/13/14</div>
+    <div class="footer-tags">
+      <div class="ftag">PostgreSQL</div>
+      <div class="ftag">REST PATCH</div>
+      <div class="ftag">ESP-IDF</div>
+      <div class="ftag">WiFi 2.4G</div>
+      <div class="ftag">Auto Seq</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ── SUPABASE CONFIG ──
+const SUPABASE_URL = 'https://vszeihhsgzmqadnrwckq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzemVpaGhzZ3ptcWFkbnJ3Y2txIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzM0OTYsImV4cCI6MjA5MDAwOTQ5Nn0.w3u5N-uRh6YZeLddDYRM1WJ2Ij-ds_Y-tDTBvlzPn40';
+
+// ── STATE ──
+const state = { red:false, yellow:false, green:false };
+const durations = { red:5, yellow:2, green:5 };
+const gpio = { red:13, yellow:12, green:14 };
+let currentMode = 'manual';
+let autoRunning = false;
+let autoPhase = 0;
+let autoTimer = null;
+let autoCountdown = 0;
+let autoCountdownTimer = null;
+let cmdCount = 0;
+let writeCount = 0;
+let cycleCount = 0;
+const circumference = 2 * Math.PI * 52;
+
+// ── TOAST ──
+let toastTimer = null;
+function showToast(msg, type) {
+  const t = document.getElementById('db-toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 2500);
+}
+
+// ── SUPABASE PATCH ──
+async function supabaseUpdate() {
+  try {
+    const body = {
+      red:    state.red,
+      yellow: state.yellow,
+      green:  state.green,
+      mode:   currentMode,
+      updated_at: new Date().toISOString()
+    };
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/traffic_light_control?id=eq.1`, {
+      method: 'PATCH',
+      headers: {
+        'apikey':        SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type':  'application/json',
+        'Prefer':        'return=minimal'
+      },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      writeCount++;
+      document.getElementById('s-writes').textContent = writeCount;
+      showToast('✓ Supabase updated', 'ok');
+      logActivity('s', `DB write #${writeCount} → R:${state.red} Y:${state.yellow} G:${state.green}`);
+    } else {
+      const txt = await res.text();
+      showToast(`✗ DB error ${res.status}`, 'err');
+      console.error('[Supabase] PATCH failed:', res.status, txt);
+    }
+  } catch(e) {
+    showToast('✗ Network error', 'err');
+    console.error('[Supabase]', e);
+  }
+}
+
+// ── CLOCK ──
+function tick() {
+  const t = new Date().toTimeString().slice(0,8);
+  const clockPill = document.getElementById('clock-pill');
+  const initTime  = document.getElementById('init-time');
+  if (clockPill) clockPill.textContent = t;
+  if (initTime)  initTime.textContent  = t;
+}
+tick(); setInterval(tick, 1000);
+
+// ── MODE SWITCH ──
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btn-manual').classList.toggle('active', mode==='manual');
+  document.getElementById('btn-auto').classList.toggle('active', mode==='auto');
+  document.getElementById('manual-panel').style.display = mode==='manual' ? '' : 'none';
+  const ap = document.getElementById('auto-panel');
+  if(mode==='auto'){ ap.style.display='flex'; ap.classList.add('visible'); }
+  else { ap.style.display='none'; ap.classList.remove('visible'); }
+  document.getElementById('mode-label-title').textContent = mode==='manual' ? 'Manual' : 'Sequence';
+  if(mode==='manual' && autoRunning) stopAuto();
+  logActivity('s','Switched to ' + (mode==='manual'?'Manual':'Auto Sequence') + ' mode');
+}
+
+// ── MANUAL TOGGLE ──
+function manualToggle(color) {
+  if(currentMode !== 'manual') return;
+  state[color] = !state[color];
+  applyState();
+  logActivity(color, 'GPIO ' + gpio[color] + ' → ' + color.charAt(0).toUpperCase()+color.slice(1) + ' ' + (state[color]?'ON':'OFF') + ' (manual)');
+  updateStats();
+  updateDB();
+  supabaseUpdate(); // ✅ PATCH to Supabase on every toggle
+}
+
+function applyState() {
+  ['red','yellow','green'].forEach(c => {
+    const on = state[c];
+    const card = document.getElementById('lcard-'+c);
+    const tog  = document.getElementById('tog-'+c);
+    const st   = document.getElementById('st-'+c);
+    const vt   = document.getElementById('vt-'+c);
+    if(card) card.classList.toggle('on', on);
+    if(tog)  tog.classList.toggle('on', on);
+    if(st)   st.textContent = on ? 'ACTIVE' : 'OFFLINE';
+    if(vt)   vt.textContent = on ? '3.3V' : '0.0V';
+    const tl = document.getElementById('tl-'+c);
+    if(tl) tl.className = 'tl-light ' + (on ? 'on-' : 'off-') + c;
+    const dbc = document.getElementById('db-'+c);
+    if(dbc){
+      dbc.textContent = on ? 'true' : 'false';
+      dbc.className = on ? 'c-on' : 'c-off';
+      dbc.style.color = on ? (c==='red'?'var(--red)':c==='yellow'?'var(--yellow)':'var(--green)') : '';
+    }
+  });
+  const amb = document.getElementById('amb3');
+  if(amb){
+    if(state.red)         amb.style.background='radial-gradient(circle,rgba(255,68,68,0.08) 0%,transparent 70%)';
+    else if(state.yellow) amb.style.background='radial-gradient(circle,rgba(255,200,68,0.06) 0%,transparent 70%)';
+    else if(state.green)  amb.style.background='radial-gradient(circle,rgba(0,229,160,0.06) 0%,transparent 70%)';
+    else                  amb.style.background='radial-gradient(circle,rgba(255,68,68,0.05) 0%,transparent 70%)';
+  }
+}
+
+// ── TIMER SETTINGS ──
+function updateDur(color, val) {
+  durations[color] = parseInt(val);
+  document.getElementById('durval-'+color).textContent = val + 's';
+  document.getElementById('seq-dur-'+color).textContent = val + ' seconds';
+}
+
+// ── AUTO SEQUENCE ──
+const phases = ['red','yellow','green'];
+const phaseColors = { red:'var(--red)', yellow:'var(--yellow)', green:'var(--green)' };
+const phaseRings  = { red:'var(--red)', yellow:'var(--yellow)', green:'var(--green)' };
+
+function toggleAuto() {
+  if(autoRunning) stopAuto();
+  else startAuto();
+}
+
+function startAuto() {
+  autoRunning = true;
+  autoPhase = 0;
+  cycleCount = 0;
+  document.getElementById('auto-btn').className = 'auto-start-btn stop';
+  document.getElementById('auto-btn').textContent = '⏹ Stop Sequence';
+  logActivity('a','Auto sequence started');
+  runPhase();
+}
+
+function stopAuto() {
+  autoRunning = false;
+  clearTimeout(autoTimer);
+  clearInterval(autoCountdownTimer);
+  document.getElementById('auto-btn').className = 'auto-start-btn start';
+  document.getElementById('auto-btn').textContent = '▶ Start Auto Sequence';
+  state.red = false; state.yellow = false; state.green = false;
+  applyState(); updateDB(); updateStats();
+  supabaseUpdate(); // ✅ All off in Supabase
+  document.getElementById('cd-num').textContent = '—';
+  document.getElementById('cd-name').textContent = '—';
+  document.getElementById('cd-orb').style.background = 'var(--muted2)';
+  document.getElementById('cd-ring').style.strokeDashoffset = circumference;
+  ['red','yellow','green'].forEach(c => {
+    document.getElementById('seq-card-'+c).classList.remove('current');
+    document.getElementById('seq-st-'+c).textContent = 'Waiting';
+  });
+  document.getElementById('seq-r').classList.remove('active');
+  document.getElementById('seq-y').classList.remove('active');
+  document.getElementById('seq-g').classList.remove('active');
+  logActivity('a','Auto sequence stopped');
+}
+
+function runPhase() {
+  if(!autoRunning) return;
+  const color = phases[autoPhase];
+  const dur   = durations[color];
+
+  state.red = false; state.yellow = false; state.green = false;
+  state[color] = true;
+  applyState(); updateDB(); updateStats();
+  supabaseUpdate(); // ✅ Each auto phase → Supabase
+
+  ['red','yellow','green'].forEach(c => {
+    document.getElementById('seq-card-'+c).classList.toggle('current', c===color);
+    document.getElementById('seq-st-'+c).textContent = c===color ? 'Active ●' : (phases.indexOf(c) < autoPhase % 3 ? 'Done' : 'Waiting');
+  });
+
+  document.getElementById('seq-r').classList.toggle('active', color==='red');
+  document.getElementById('seq-y').classList.toggle('active', color==='yellow');
+  document.getElementById('seq-g').classList.toggle('active', color==='green');
+
+  document.getElementById('cd-name').textContent = color.charAt(0).toUpperCase()+color.slice(1);
+  document.getElementById('cd-name').style.color = phaseColors[color];
+  document.getElementById('cd-orb').style.background = phaseColors[color];
+  document.getElementById('cd-orb').style.boxShadow = '0 0 12px ' + phaseColors[color];
+  document.getElementById('cd-ring').style.stroke = phaseRings[color];
+
+  autoCountdown = dur;
+  updateCountdown(dur, dur);
+
+  clearInterval(autoCountdownTimer);
+  autoCountdownTimer = setInterval(() => {
+    autoCountdown--;
+    updateCountdown(autoCountdown, dur);
+    if(autoCountdown <= 0) clearInterval(autoCountdownTimer);
+  }, 1000);
+
+  logActivity(color, 'Auto phase → ' + color.charAt(0).toUpperCase()+color.slice(1) + ' · ' + dur + 's');
+
+  autoTimer = setTimeout(() => {
+    autoPhase = (autoPhase + 1) % 3;
+    if(autoPhase === 0) {
+      cycleCount++;
+      document.getElementById('s-cycles').textContent = cycleCount;
+    }
+    runPhase();
+  }, dur * 1000);
+}
+
+function updateCountdown(remaining, total) {
+  document.getElementById('cd-num').textContent = remaining;
+  const offset = circumference - (remaining / total) * circumference;
+  document.getElementById('cd-ring').style.strokeDashoffset = offset;
+}
+
+// ── DB UPDATE (local display only) ──
+function updateDB() {
+  const ts = new Date().toTimeString().slice(0,8);
+  document.getElementById('db-ts').textContent = ts;
+  document.getElementById('db-mode').textContent = currentMode;
+  document.getElementById('db-mode').className = 'c-on';
+  document.getElementById('db-mode').style.color = currentMode==='auto' ? 'var(--accent2)' : 'var(--muted)';
+}
+
+// ── STATS ──
+function updateStats() {
+  cmdCount++;
+  document.getElementById('s-cmds').textContent = cmdCount;
+  const active = Object.values(state).filter(Boolean).length;
+  document.getElementById('s-active').innerHTML = active + '<span class="stat-unit">/3</span>';
+}
+
+// ── ACTIVITY LOG ──
+function logActivity(type, msg) {
+  const feed = document.getElementById('act-feed');
+  const ts   = new Date().toTimeString().slice(0,8);
+  const item = document.createElement('div');
+  item.className = 'act-item';
+  const dotClass = type==='red'?'r':type==='yellow'?'y':type==='green'?'g':type==='a'?'a':'s';
+  item.innerHTML = `<div class="act-dot ${dotClass}"></div><div class="act-msg">${msg}</div><div class="act-time">${ts}</div>`;
+  feed.insertBefore(item, feed.firstChild);
+  while(feed.children.length > 8) feed.removeChild(feed.lastChild);
+}
+
+// Init
+applyState();
+</script>
+</body>
+</html>
