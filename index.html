@@ -43,7 +43,6 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .amb2{width:500px;height:500px;bottom:-200px;right:-100px;background:radial-gradient(circle,rgba(0,229,160,0.07) 0%,transparent 70%)}
 .amb3{width:300px;height:300px;top:40%;left:40%;background:radial-gradient(circle,rgba(255,68,68,0.05) 0%,transparent 70%);transition:all 0.8s ease}
 
-/* ── DB TOAST ── */
 #db-toast{position:fixed;bottom:24px;right:24px;z-index:9998;font-family:var(--font-m);font-size:11px;padding:8px 16px;border-radius:100px;border:0.5px solid var(--border2);background:var(--s2);color:var(--muted);opacity:0;transform:translateY(8px);transition:all 0.3s;pointer-events:none}
 #db-toast.show{opacity:1;transform:translateY(0)}
 #db-toast.ok{color:var(--green);border-color:rgba(0,229,160,0.3)}
@@ -82,14 +81,14 @@ header{display:flex;align-items:center;justify-content:space-between;padding:24p
 .traffic-light-visual{display:flex;flex-direction:column;align-items:center;gap:0}
 .tl-housing{background:#111118;border:1.5px solid rgba(255,255,255,0.08);border-radius:20px;padding:12px 10px;display:flex;flex-direction:column;gap:10px;position:relative;width:80px}
 .tl-housing::after{content:'TRAFFIC\ALIGHT';white-space:pre;position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:7px;color:var(--muted2);letter-spacing:0.1em;text-align:center;line-height:1.4}
-.tl-light{width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);position:relative}
+.tl-light{width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative}
 .tl-light.on-red{background:var(--red);border-color:var(--red);box-shadow:0 0 24px 8px var(--rg)}
 .tl-light.on-yellow{background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 24px 8px var(--yg)}
 .tl-light.on-green{background:var(--green);border-color:var(--green);box-shadow:0 0 24px 8px var(--gg)}
 .tl-light.off-red{background:rgba(255,68,68,0.06)}
 .tl-light.off-yellow{background:rgba(255,200,68,0.06)}
 .tl-light.off-green{background:rgba(0,229,160,0.06)}
-.tl-lens{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all 0.5s}
+.tl-lens{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all 0.3s}
 .tl-light.on-red .tl-lens,.tl-light.on-yellow .tl-lens,.tl-light.on-green .tl-lens{background:rgba(255,255,255,0.45)}
 .tl-stem{width:8px;height:32px;background:linear-gradient(to bottom,#1a1a28,#0e0e18);border-left:1px solid rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.03)}
 .tl-base{width:36px;height:6px;background:#111118;border-radius:4px;border:1px solid rgba(255,255,255,0.05)}
@@ -149,22 +148,28 @@ header{display:flex;align-items:center;justify-content:space-between;padding:24p
 .lcard.on.yellow .volt-val{color:var(--yellow);border-color:rgba(255,200,68,0.2)}
 .lcard.on.green .volt-val{color:var(--green);border-color:rgba(0,229,160,0.2)}
 
+/* ── AUTO PANEL ── */
 #auto-panel{display:none;flex-direction:column;gap:20px}
 #auto-panel.visible{display:flex}
 .auto-top{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:640px){.auto-top{grid-template-columns:1fr}}
 
-.countdown-card{padding:24px;display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden}
+.countdown-card{padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
 .cd-label{font-family:var(--font-m);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em}
 .cd-active-light{display:flex;align-items:center;gap:12px;margin:4px 0}
 .cd-light-orb{width:20px;height:20px;border-radius:50%;transition:all 0.5s}
 .cd-light-name{font-family:var(--font-h);font-size:32px;letter-spacing:0.04em;transition:color 0.5s}
-.cd-timer-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin:8px 0}
+.cd-timer-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin:4px 0}
 .cd-timer-svg{transform:rotate(-90deg)}
 .cd-timer-track{fill:none;stroke:var(--border2);stroke-width:4}
 .cd-timer-fill{fill:none;stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke 0.5s}
-.cd-timer-num{position:absolute;font-family:var(--font-h);font-size:48px;letter-spacing:0.05em;text-align:center;transition:color 0.5s}
-.cd-timer-unit{position:absolute;bottom:18px;font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:0.1em}
+.cd-timer-num{position:absolute;font-family:var(--font-h);font-size:44px;letter-spacing:0.05em;text-align:center;transition:color 0.5s}
+.cd-timer-unit{position:absolute;bottom:16px;font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:0.1em}
+
+/* Blink indicator badge */
+.blink-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-family:var(--font-m);font-size:10px;border:0.5px solid var(--border);background:var(--s2);color:var(--muted);transition:all 0.3s}
+.blink-badge.active-blink{color:var(--yellow);border-color:rgba(255,200,68,0.4);background:rgba(255,200,68,0.08)}
+.blink-badge .blink-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
 
 .cd-seq{display:flex;align-items:center;gap:8px;margin-top:4px}
 .cd-seq-dot{width:10px;height:10px;border-radius:50%;opacity:0.3;transition:all 0.4s;border:1.5px solid}
@@ -177,21 +182,20 @@ header{display:flex;align-items:center;justify-content:space-between;padding:24p
 .cd-seq-dot.green-d.active{background:var(--green)}
 .cd-seq-arrow{font-family:var(--font-m);font-size:10px;color:var(--muted2)}
 
-.timer-settings-card{padding:22px;display:flex;flex-direction:column;gap:16px}
-.ts-title{font-size:14px;font-weight:600;color:var(--text)}
-.ts-subtitle{font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:2px}
-.timer-inputs{display:flex;flex-direction:column;gap:12px}
-.timer-input-row{display:flex;align-items:center;gap:12px}
-.ti-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.ti-label{font-family:var(--font-m);font-size:11px;color:var(--muted);width:52px;flex-shrink:0}
-.ti-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--s3);outline:none;cursor:pointer}
-.ti-slider.red-s::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--red);cursor:pointer;box-shadow:0 0 8px var(--rg)}
-.ti-slider.yellow-s::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--yellow);cursor:pointer;box-shadow:0 0 8px var(--yg)}
-.ti-slider.green-s::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 8px var(--gg)}
-.ti-val{font-family:var(--font-m);font-size:12px;font-weight:500;width:36px;text-align:right;flex-shrink:0}
-.ti-val.red-v{color:var(--red)}
-.ti-val.yellow-v{color:var(--yellow)}
-.ti-val.green-v{color:var(--green)}
+/* PH timing info card */
+.ph-timing-card{padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.ph-title-row{display:flex;align-items:center;gap:8px}
+.ph-flag{font-size:16px}
+.ph-card-title{font-size:14px;font-weight:600;color:var(--text)}
+.ph-card-sub{font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:2px}
+.ph-timings{display:flex;flex-direction:column;gap:8px}
+.ph-row{display:flex;align-items:center;gap:10px}
+.ph-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ph-light-label{font-family:var(--font-m);font-size:11px;width:52px;flex-shrink:0}
+.ph-bar-bg{flex:1;height:6px;background:var(--s3);border-radius:3px;overflow:hidden}
+.ph-bar-fill{height:100%;border-radius:3px;transition:width 0.5s ease}
+.ph-sec{font-family:var(--font-m);font-size:11px;width:36px;text-align:right;flex-shrink:0}
+.ph-blink-note{font-family:var(--font-m);font-size:10px;color:var(--muted);padding:8px 10px;border-radius:8px;border:0.5px solid var(--border);background:rgba(255,200,68,0.04);line-height:1.6}
 
 .auto-start-btn{width:100%;padding:13px;border-radius:12px;border:none;font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;letter-spacing:0.02em}
 .auto-start-btn.start{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 6px 24px rgba(108,99,255,0.3)}
@@ -217,6 +221,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:24p
 .seq-dur{font-family:var(--font-m);font-size:10px;color:var(--muted)}
 .seq-status{font-family:var(--font-m);font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em}
 .seq-card.current .seq-status{color:var(--accent2)}
+
+/* Blinking seq card pulse */
+.seq-card.blinking.seq-red{animation:blink-pulse-r 0.5s infinite}
+.seq-card.blinking.seq-green{animation:blink-pulse-g 0.5s infinite}
+@keyframes blink-pulse-r{0%,100%{border-color:rgba(255,68,68,0.3)}50%{border-color:rgba(255,68,68,0.08)}}
+@keyframes blink-pulse-g{0%,100%{border-color:rgba(0,229,160,0.3)}50%{border-color:rgba(0,229,160,0.08)}}
 
 .bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
 @media(max-width:640px){.bottom-row{grid-template-columns:1fr}}
@@ -293,7 +303,7 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
       </div>
       <div>
         <div class="brand-name">TrafficOS</div>
-        <div class="brand-ver">v3.0.0 · smart control</div>
+        <div class="brand-ver">v3.1.0 · PH realistic · smart control</div>
       </div>
     </div>
     <div class="header-pills">
@@ -309,12 +319,13 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
     </div>
     <div class="mode-switch">
       <button class="mode-btn active" id="btn-manual" onclick="setMode('manual')">⚙ Manual</button>
-      <button class="mode-btn" id="btn-auto" onclick="setMode('auto')">▶ Auto Sequence</button>
+      <button class="mode-btn" id="btn-auto" onclick="setMode('auto')">▶ PH Auto Sequence</button>
     </div>
   </div>
 
   <div class="top-section">
 
+    <!-- MANUAL PANEL -->
     <div id="manual-panel">
       <div class="lights-grid">
 
@@ -369,9 +380,11 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
       </div>
     </div>
 
+    <!-- AUTO PANEL -->
     <div id="auto-panel">
       <div class="auto-top">
 
+        <!-- Countdown Card -->
         <div class="card countdown-card">
           <div class="cd-label">Currently Active</div>
           <div class="cd-active-light">
@@ -386,68 +399,89 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
             <div class="cd-timer-num" id="cd-num">—</div>
             <div class="cd-timer-unit">SEC</div>
           </div>
+          <!-- Blink indicator -->
+          <div class="blink-badge" id="blink-badge">
+            <div class="blink-dot"></div>
+            <span id="blink-label">Steady</span>
+          </div>
           <div class="cd-seq">
             <div class="cd-seq-dot red-d" id="seq-r"></div>
             <div class="cd-seq-arrow">→</div>
-            <div class="cd-seq-dot yellow-d" id="seq-y"></div>
-            <div class="cd-seq-arrow">→</div>
             <div class="cd-seq-dot green-d" id="seq-g"></div>
+            <div class="cd-seq-arrow">→</div>
+            <div class="cd-seq-dot yellow-d" id="seq-y"></div>
             <div class="cd-seq-arrow">↺</div>
           </div>
         </div>
 
-        <div class="card timer-settings-card">
+        <!-- PH Timing Info Card (replaces timer sliders in auto mode) -->
+        <div class="card ph-timing-card">
           <div>
-            <div class="ts-title">Timer Settings</div>
-            <div class="ts-subtitle">Drag to set duration per light</div>
+            <div class="ph-title-row">
+              <span class="ph-flag">🇵🇭</span>
+              <div class="ph-card-title">PH Intersection Timing</div>
+            </div>
+            <div class="ph-card-sub">Standard DPWH/MMDA timing values</div>
           </div>
-          <div class="timer-inputs">
-            <div class="timer-input-row">
-              <div class="ti-color" style="background:var(--red)"></div>
-              <div class="ti-label" style="color:var(--red)">Red</div>
-              <input type="range" class="ti-slider red-s" id="dur-red" min="2" max="30" value="5" oninput="updateDur('red',this.value)">
-              <div class="ti-val red-v" id="durval-red">5s</div>
+          <div class="ph-timings">
+            <div class="ph-row">
+              <div class="ph-dot" style="background:var(--red)"></div>
+              <div class="ph-light-label" style="color:var(--red);font-family:var(--font-m);font-size:11px">Red</div>
+              <div class="ph-bar-bg">
+                <div class="ph-bar-fill" style="width:100%;background:var(--red);opacity:0.7"></div>
+              </div>
+              <div class="ph-sec" style="color:var(--red);font-family:var(--font-m);font-size:11px">60s</div>
             </div>
-            <div class="timer-input-row">
-              <div class="ti-color" style="background:var(--yellow)"></div>
-              <div class="ti-label" style="color:var(--yellow)">Yellow</div>
-              <input type="range" class="ti-slider yellow-s" id="dur-yellow" min="1" max="10" value="2" oninput="updateDur('yellow',this.value)">
-              <div class="ti-val yellow-v" id="durval-yellow">2s</div>
+            <div class="ph-row">
+              <div class="ph-dot" style="background:var(--green)"></div>
+              <div class="ph-light-label" style="color:var(--green);font-family:var(--font-m);font-size:11px">Green</div>
+              <div class="ph-bar-bg">
+                <div class="ph-bar-fill" style="width:75%;background:var(--green);opacity:0.7"></div>
+              </div>
+              <div class="ph-sec" style="color:var(--green);font-family:var(--font-m);font-size:11px">45s</div>
             </div>
-            <div class="timer-input-row">
-              <div class="ti-color" style="background:var(--green)"></div>
-              <div class="ti-label" style="color:var(--green)">Green</div>
-              <input type="range" class="ti-slider green-s" id="dur-green" min="2" max="30" value="5" oninput="updateDur('green',this.value)">
-              <div class="ti-val green-v" id="durval-green">5s</div>
+            <div class="ph-row">
+              <div class="ph-dot" style="background:var(--yellow)"></div>
+              <div class="ph-light-label" style="color:var(--yellow);font-family:var(--font-m);font-size:11px">Yellow</div>
+              <div class="ph-bar-bg">
+                <div class="ph-bar-fill" style="width:8%;background:var(--yellow);opacity:0.7"></div>
+              </div>
+              <div class="ph-sec" style="color:var(--yellow);font-family:var(--font-m);font-size:11px">5s</div>
             </div>
           </div>
-          <button class="auto-start-btn start" id="auto-btn" onclick="toggleAuto()">▶ Start Auto Sequence</button>
+          <div class="ph-blink-note">
+            ⚡ Red &amp; Green blink at 2Hz during last 5 seconds before switching.<br>
+            Yellow is always steady — no blink.
+          </div>
+          <button class="auto-start-btn start" id="auto-btn" onclick="toggleAuto()">▶ Start PH Sequence</button>
         </div>
 
       </div>
 
+      <!-- Sequence phase cards: RED → GREEN → YELLOW (PH order) -->
       <div class="auto-seq-display" style="margin-top:14px">
         <div class="card seq-card seq-red" id="seq-card-red">
           <div class="seq-dot"></div>
           <div class="seq-name">Red Phase</div>
-          <div class="seq-dur" id="seq-dur-red">5 seconds</div>
+          <div class="seq-dur">60 seconds</div>
           <div class="seq-status" id="seq-st-red">Waiting</div>
-        </div>
-        <div class="card seq-card seq-yellow" id="seq-card-yellow">
-          <div class="seq-dot"></div>
-          <div class="seq-name">Yellow Phase</div>
-          <div class="seq-dur" id="seq-dur-yellow">2 seconds</div>
-          <div class="seq-status" id="seq-st-yellow">Waiting</div>
         </div>
         <div class="card seq-card seq-green" id="seq-card-green">
           <div class="seq-dot"></div>
           <div class="seq-name">Green Phase</div>
-          <div class="seq-dur" id="seq-dur-green">5 seconds</div>
+          <div class="seq-dur">45 seconds</div>
           <div class="seq-status" id="seq-st-green">Waiting</div>
+        </div>
+        <div class="card seq-card seq-yellow" id="seq-card-yellow">
+          <div class="seq-dot"></div>
+          <div class="seq-name">Yellow Phase</div>
+          <div class="seq-dur">5 seconds</div>
+          <div class="seq-status" id="seq-st-yellow">Waiting</div>
         </div>
       </div>
     </div>
 
+    <!-- Traffic Light Visual -->
     <div class="traffic-light-visual">
       <div class="traffic-pole">
         <div class="tl-housing">
@@ -480,7 +514,7 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
       </div>
       <div class="db-wrap">
         <table class="db-tbl">
-          <thead><tr><th>id</th><th>red</th><th>yellow</th><th>green</th><th>mode</th><th>updated_at</th></tr></thead>
+          <thead><tr><th>id</th><th>red</th><th>yellow</th><th>green</th><th>mode</th><th>remaining</th><th>blink</th><th>updated_at</th></tr></thead>
           <tbody>
             <tr>
               <td class="c-id">1</td>
@@ -488,6 +522,8 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
               <td class="c-off" id="db-yellow">false</td>
               <td class="c-off" id="db-green">false</td>
               <td class="c-off" id="db-mode">manual</td>
+              <td class="c-off" id="db-remaining">—</td>
+              <td class="c-off" id="db-blink">false</td>
               <td class="c-ts" id="db-ts">—</td>
             </tr>
           </tbody>
@@ -524,7 +560,7 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
       <div class="activity-feed" id="act-feed">
         <div class="act-item">
           <div class="act-dot s"></div>
-          <div class="act-msg">System initialized · TrafficOS v3.0.0</div>
+          <div class="act-msg">System initialized · TrafficOS v3.1.0 (PH Realistic)</div>
           <div class="act-time" id="init-time">--:--:--</div>
         </div>
       </div>
@@ -552,39 +588,67 @@ footer{margin-top:40px;padding-top:20px;border-top:0.5px solid var(--border);dis
   </div>
 
   <footer>
-    <div class="footer-l">TrafficOS v3.0.0 · Supabase REST · ESP32 · GPIO 12/13/14</div>
+    <div class="footer-l">TrafficOS v3.1.0 · PH Realistic Timing · Supabase REST · ESP32 · GPIO 12/13/14</div>
     <div class="footer-tags">
       <div class="ftag">PostgreSQL</div>
       <div class="ftag">REST PATCH</div>
       <div class="ftag">ESP-IDF</div>
       <div class="ftag">WiFi 2.4G</div>
-      <div class="ftag">Auto Seq</div>
+      <div class="ftag">PH Standard</div>
+      <div class="ftag">2Hz Blink</div>
     </div>
   </footer>
 
 </div>
 
 <script>
-// ── SUPABASE CONFIG ──
+// ═══════════════════════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://vszeihhsgzmqadnrwckq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzemVpaGhzZ3ptcWFkbnJ3Y2txIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzM0OTYsImV4cCI6MjA5MDAwOTQ5Nn0.w3u5N-uRh6YZeLddDYRM1WJ2Ij-ds_Y-tDTBvlzPn40';
 
-// ── STATE ──
-const state = { red:false, yellow:false, green:false };
-const durations = { red:5, yellow:2, green:5 };
-const gpio = { red:13, yellow:12, green:14 };
-let currentMode = 'manual';
-let autoRunning = false;
-let autoPhase = 0;
-let autoTimer = null;
-let autoCountdown = 0;
-let autoCountdownTimer = null;
-let cmdCount = 0;
-let writeCount = 0;
-let cycleCount = 0;
-const circumference = 2 * Math.PI * 52;
+// ═══════════════════════════════════════════════════════
+//  PH TRAFFIC TIMING CONSTANTS
+// ═══════════════════════════════════════════════════════
+const PH_DURATIONS = { red: 60, green: 45, yellow: 5 };
+// PH cycle order: RED → GREEN → YELLOW → repeat
+const PH_CYCLE = ['red', 'green', 'yellow'];
+const BLINK_THRESHOLD = 5;    // last N seconds trigger blinking
+const BLINK_INTERVAL  = 500;  // ms — 2 blinks per second
 
-// ── TOAST ──
+// ═══════════════════════════════════════════════════════
+//  MANUAL STATE
+// ═══════════════════════════════════════════════════════
+const manualState = { red: false, yellow: false, green: false };
+const gpio = { red: 13, yellow: 12, green: 14 };
+let currentMode = 'manual';
+
+// ═══════════════════════════════════════════════════════
+//  AUTO SEQUENCE STATE MACHINE
+// ═══════════════════════════════════════════════════════
+let autoRunning     = false;
+let autoPhaseIndex  = 0;         // index in PH_CYCLE
+let autoRemaining   = 0;         // seconds left in current phase
+let isBlinking      = false;     // are we in blink window?
+let blinkVisible    = true;      // current blink on/off state
+let cycleCount      = 0;
+
+// Timers (interval IDs)
+let countdownTimer  = null;      // fires every 1 second
+let blinkTimer      = null;      // fires every 500ms
+
+// ═══════════════════════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════════════════════
+let cmdCount   = 0;
+let writeCount = 0;
+
+const circumference = 2 * Math.PI * 52; // SVG ring
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
 let toastTimer = null;
 function showToast(msg, type) {
   const t = document.getElementById('db-toast');
@@ -594,15 +658,22 @@ function showToast(msg, type) {
   toastTimer = setTimeout(() => { t.className = ''; }, 2500);
 }
 
-// ── SUPABASE PATCH ──
-async function supabaseUpdate() {
+// ═══════════════════════════════════════════════════════
+//  SUPABASE PATCH
+// ═══════════════════════════════════════════════════════
+async function supabaseUpdate(extraFields = {}) {
   try {
+    const activeColor = autoRunning ? PH_CYCLE[autoPhaseIndex] : null;
     const body = {
-      red:    state.red,
-      yellow: state.yellow,
-      green:  state.green,
+      red:    autoRunning ? (activeColor === 'red'    && blinkVisible) : manualState.red,
+      yellow: autoRunning ? (activeColor === 'yellow' && blinkVisible) : manualState.yellow,
+      green:  autoRunning ? (activeColor === 'green'  && blinkVisible) : manualState.green,
       mode:   currentMode,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      current_light_state: autoRunning ? activeColor : null,
+      remaining_time_seconds: autoRunning ? autoRemaining : null,
+      is_blinking: isBlinking,
+      ...extraFields
     };
     const res = await fetch(`${SUPABASE_URL}/rest/v1/traffic_light_control?id=eq.1`, {
       method: 'PATCH',
@@ -618,216 +689,335 @@ async function supabaseUpdate() {
       writeCount++;
       document.getElementById('s-writes').textContent = writeCount;
       showToast('✓ Supabase updated', 'ok');
-      logActivity('s', `DB write #${writeCount} → R:${state.red} Y:${state.yellow} G:${state.green}`);
+      logActivity('s', `DB #${writeCount} → ${autoRunning ? activeColor.toUpperCase() + ' ' + autoRemaining + 's' + (isBlinking ? ' BLINK' : '') : 'manual'}`);
     } else {
-      const txt = await res.text();
       showToast(`✗ DB error ${res.status}`, 'err');
-      console.error('[Supabase] PATCH failed:', res.status, txt);
     }
   } catch(e) {
     showToast('✗ Network error', 'err');
-    console.error('[Supabase]', e);
   }
 }
 
-// ── CLOCK ──
+// ═══════════════════════════════════════════════════════
+//  CLOCK
+// ═══════════════════════════════════════════════════════
 function tick() {
-  const t = new Date().toTimeString().slice(0,8);
-  const clockPill = document.getElementById('clock-pill');
-  const initTime  = document.getElementById('init-time');
-  if (clockPill) clockPill.textContent = t;
-  if (initTime)  initTime.textContent  = t;
+  const t = new Date().toTimeString().slice(0, 8);
+  document.getElementById('clock-pill').textContent = t;
+  document.getElementById('init-time').textContent  = t;
 }
-tick(); setInterval(tick, 1000);
+tick();
+setInterval(tick, 1000);
 
-// ── MODE SWITCH ──
+// ═══════════════════════════════════════════════════════
+//  MODE SWITCH
+// ═══════════════════════════════════════════════════════
 function setMode(mode) {
   currentMode = mode;
-  document.getElementById('btn-manual').classList.toggle('active', mode==='manual');
-  document.getElementById('btn-auto').classList.toggle('active', mode==='auto');
-  document.getElementById('manual-panel').style.display = mode==='manual' ? '' : 'none';
+  document.getElementById('btn-manual').classList.toggle('active', mode === 'manual');
+  document.getElementById('btn-auto').classList.toggle('active', mode === 'auto');
+  document.getElementById('manual-panel').style.display = mode === 'manual' ? '' : 'none';
   const ap = document.getElementById('auto-panel');
-  if(mode==='auto'){ ap.style.display='flex'; ap.classList.add('visible'); }
-  else { ap.style.display='none'; ap.classList.remove('visible'); }
-  document.getElementById('mode-label-title').textContent = mode==='manual' ? 'Manual' : 'Sequence';
-  if(mode==='manual' && autoRunning) stopAuto();
-  logActivity('s','Switched to ' + (mode==='manual'?'Manual':'Auto Sequence') + ' mode');
+  if (mode === 'auto') { ap.style.display = 'flex'; ap.classList.add('visible'); }
+  else { ap.style.display = 'none'; ap.classList.remove('visible'); }
+  document.getElementById('mode-label-title').textContent = mode === 'manual' ? 'Manual' : 'PH Sequence';
+  if (mode === 'manual' && autoRunning) stopAuto();
+  logActivity('s', 'Switched to ' + (mode === 'manual' ? 'Manual' : 'PH Auto Sequence') + ' mode');
 }
 
-// ── MANUAL TOGGLE ──
+// ═══════════════════════════════════════════════════════
+//  MANUAL TOGGLE
+// ═══════════════════════════════════════════════════════
 function manualToggle(color) {
-  if(currentMode !== 'manual') return;
-  state[color] = !state[color];
-  applyState();
-  logActivity(color, 'GPIO ' + gpio[color] + ' → ' + color.charAt(0).toUpperCase()+color.slice(1) + ' ' + (state[color]?'ON':'OFF') + ' (manual)');
+  if (currentMode !== 'manual') return;
+  manualState[color] = !manualState[color];
+  applyManualState();
+  logActivity(color, 'GPIO ' + gpio[color] + ' → ' + color.charAt(0).toUpperCase() + color.slice(1) + ' ' + (manualState[color] ? 'ON' : 'OFF') + ' (manual)');
   updateStats();
-  updateDB();
-  supabaseUpdate(); // ✅ PATCH to Supabase on every toggle
+  updateDBDisplay();
+  supabaseUpdate();
 }
 
-function applyState() {
-  ['red','yellow','green'].forEach(c => {
-    const on = state[c];
-    const card = document.getElementById('lcard-'+c);
-    const tog  = document.getElementById('tog-'+c);
-    const st   = document.getElementById('st-'+c);
-    const vt   = document.getElementById('vt-'+c);
-    if(card) card.classList.toggle('on', on);
-    if(tog)  tog.classList.toggle('on', on);
-    if(st)   st.textContent = on ? 'ACTIVE' : 'OFFLINE';
-    if(vt)   vt.textContent = on ? '3.3V' : '0.0V';
-    const tl = document.getElementById('tl-'+c);
-    if(tl) tl.className = 'tl-light ' + (on ? 'on-' : 'off-') + c;
-    const dbc = document.getElementById('db-'+c);
-    if(dbc){
-      dbc.textContent = on ? 'true' : 'false';
-      dbc.className = on ? 'c-on' : 'c-off';
-      dbc.style.color = on ? (c==='red'?'var(--red)':c==='yellow'?'var(--yellow)':'var(--green)') : '';
-    }
+function applyManualState() {
+  ['red', 'yellow', 'green'].forEach(c => {
+    const on = manualState[c];
+    applyLightUI(c, on);
   });
-  const amb = document.getElementById('amb3');
-  if(amb){
-    if(state.red)         amb.style.background='radial-gradient(circle,rgba(255,68,68,0.08) 0%,transparent 70%)';
-    else if(state.yellow) amb.style.background='radial-gradient(circle,rgba(255,200,68,0.06) 0%,transparent 70%)';
-    else if(state.green)  amb.style.background='radial-gradient(circle,rgba(0,229,160,0.06) 0%,transparent 70%)';
-    else                  amb.style.background='radial-gradient(circle,rgba(255,68,68,0.05) 0%,transparent 70%)';
+  updateAmbient(manualState.red ? 'red' : manualState.yellow ? 'yellow' : manualState.green ? 'green' : null);
+}
+
+// ═══════════════════════════════════════════════════════
+//  LIGHT UI HELPERS
+// ═══════════════════════════════════════════════════════
+function applyLightUI(color, on) {
+  const card = document.getElementById('lcard-' + color);
+  const tog  = document.getElementById('tog-' + color);
+  const st   = document.getElementById('st-' + color);
+  const vt   = document.getElementById('vt-' + color);
+  if (card) card.classList.toggle('on', on);
+  if (tog)  tog.classList.toggle('on', on);
+  if (st)   st.textContent = on ? 'ACTIVE' : 'OFFLINE';
+  if (vt)   vt.textContent = on ? '3.3V' : '0.0V';
+  const tl = document.getElementById('tl-' + color);
+  if (tl) tl.className = 'tl-light ' + (on ? 'on-' : 'off-') + color;
+  const dbc = document.getElementById('db-' + color);
+  if (dbc) {
+    dbc.textContent = on ? 'true' : 'false';
+    dbc.className   = on ? 'c-on' : 'c-off';
+    dbc.style.color = on ? (color==='red'?'var(--red)':color==='yellow'?'var(--yellow)':'var(--green)') : '';
   }
 }
 
-// ── TIMER SETTINGS ──
-function updateDur(color, val) {
-  durations[color] = parseInt(val);
-  document.getElementById('durval-'+color).textContent = val + 's';
-  document.getElementById('seq-dur-'+color).textContent = val + ' seconds';
+function setAllLightsOff() {
+  ['red', 'yellow', 'green'].forEach(c => applyLightUI(c, false));
 }
 
-// ── AUTO SEQUENCE ──
-const phases = ['red','yellow','green'];
-const phaseColors = { red:'var(--red)', yellow:'var(--yellow)', green:'var(--green)' };
-const phaseRings  = { red:'var(--red)', yellow:'var(--yellow)', green:'var(--green)' };
+function updateAmbient(active) {
+  const amb = document.getElementById('amb3');
+  if (!amb) return;
+  if (active === 'red')    amb.style.background = 'radial-gradient(circle,rgba(255,68,68,0.08) 0%,transparent 70%)';
+  else if (active === 'yellow') amb.style.background = 'radial-gradient(circle,rgba(255,200,68,0.06) 0%,transparent 70%)';
+  else if (active === 'green')  amb.style.background = 'radial-gradient(circle,rgba(0,229,160,0.06) 0%,transparent 70%)';
+  else amb.style.background = 'radial-gradient(circle,rgba(108,99,255,0.04) 0%,transparent 70%)';
+}
 
+// ═══════════════════════════════════════════════════════
+//  AUTO SEQUENCE — START / STOP
+// ═══════════════════════════════════════════════════════
 function toggleAuto() {
-  if(autoRunning) stopAuto();
+  if (autoRunning) stopAuto();
   else startAuto();
 }
 
 function startAuto() {
-  autoRunning = true;
-  autoPhase = 0;
-  cycleCount = 0;
-  document.getElementById('auto-btn').className = 'auto-start-btn stop';
+  autoRunning    = true;
+  autoPhaseIndex = 0;
+  cycleCount     = 0;
+  document.getElementById('auto-btn').className   = 'auto-start-btn stop';
   document.getElementById('auto-btn').textContent = '⏹ Stop Sequence';
-  logActivity('a','Auto sequence started');
-  runPhase();
+  logActivity('a', 'PH Auto sequence started');
+  enterPhase(0);
 }
 
 function stopAuto() {
   autoRunning = false;
-  clearTimeout(autoTimer);
-  clearInterval(autoCountdownTimer);
-  document.getElementById('auto-btn').className = 'auto-start-btn start';
-  document.getElementById('auto-btn').textContent = '▶ Start Auto Sequence';
-  state.red = false; state.yellow = false; state.green = false;
-  applyState(); updateDB(); updateStats();
-  supabaseUpdate(); // ✅ All off in Supabase
-  document.getElementById('cd-num').textContent = '—';
-  document.getElementById('cd-name').textContent = '—';
-  document.getElementById('cd-orb').style.background = 'var(--muted2)';
+  clearInterval(countdownTimer);
+  clearInterval(blinkTimer);
+  countdownTimer = null;
+  blinkTimer = null;
+  isBlinking = false;
+  blinkVisible = true;
+
+  document.getElementById('auto-btn').className   = 'auto-start-btn start';
+  document.getElementById('auto-btn').textContent = '▶ Start PH Sequence';
+
+  setAllLightsOff();
+  updateAmbient(null);
+  updateStats();
+  updateDBDisplay();
+  supabaseUpdate();
+
+  // Reset countdown display
+  document.getElementById('cd-num').textContent   = '—';
+  document.getElementById('cd-name').textContent  = '—';
+  document.getElementById('cd-orb').style.background  = 'var(--muted2)';
+  document.getElementById('cd-orb').style.boxShadow   = 'none';
   document.getElementById('cd-ring').style.strokeDashoffset = circumference;
-  ['red','yellow','green'].forEach(c => {
-    document.getElementById('seq-card-'+c).classList.remove('current');
-    document.getElementById('seq-st-'+c).textContent = 'Waiting';
+  document.getElementById('blink-badge').className = 'blink-badge';
+  document.getElementById('blink-label').textContent = 'Steady';
+
+  // Reset sequence cards
+  PH_CYCLE.forEach(c => {
+    const card = document.getElementById('seq-card-' + c);
+    card.classList.remove('current', 'blinking');
+    document.getElementById('seq-st-' + c).textContent = 'Waiting';
   });
   document.getElementById('seq-r').classList.remove('active');
-  document.getElementById('seq-y').classList.remove('active');
   document.getElementById('seq-g').classList.remove('active');
-  logActivity('a','Auto sequence stopped');
+  document.getElementById('seq-y').classList.remove('active');
+
+  logActivity('a', 'PH Auto sequence stopped · ' + cycleCount + ' cycles completed');
 }
 
-function runPhase() {
-  if(!autoRunning) return;
-  const color = phases[autoPhase];
-  const dur   = durations[color];
+// ═══════════════════════════════════════════════════════
+//  STATE MACHINE: ENTER PHASE
+// ═══════════════════════════════════════════════════════
+function enterPhase(phaseIdx) {
+  if (!autoRunning) return;
 
-  state.red = false; state.yellow = false; state.green = false;
-  state[color] = true;
-  applyState(); updateDB(); updateStats();
-  supabaseUpdate(); // ✅ Each auto phase → Supabase
+  autoPhaseIndex = phaseIdx;
+  const color    = PH_CYCLE[phaseIdx];
+  const duration = PH_DURATIONS[color];
+  autoRemaining  = duration;
+  isBlinking     = false;
+  blinkVisible   = true;
 
-  ['red','yellow','green'].forEach(c => {
-    document.getElementById('seq-card-'+c).classList.toggle('current', c===color);
-    document.getElementById('seq-st-'+c).textContent = c===color ? 'Active ●' : (phases.indexOf(c) < autoPhase % 3 ? 'Done' : 'Waiting');
-  });
+  // Stop any existing timers
+  clearInterval(countdownTimer);
+  clearInterval(blinkTimer);
+  blinkTimer = null;
 
-  document.getElementById('seq-r').classList.toggle('active', color==='red');
-  document.getElementById('seq-y').classList.toggle('active', color==='yellow');
-  document.getElementById('seq-g').classList.toggle('active', color==='green');
+  // Set the active light
+  setAllLightsOff();
+  applyLightUI(color, true);
+  updateAmbient(color);
+  updateStats();
+  updateDBDisplay();
+  supabaseUpdate();
 
-  document.getElementById('cd-name').textContent = color.charAt(0).toUpperCase()+color.slice(1);
-  document.getElementById('cd-name').style.color = phaseColors[color];
-  document.getElementById('cd-orb').style.background = phaseColors[color];
-  document.getElementById('cd-orb').style.boxShadow = '0 0 12px ' + phaseColors[color];
-  document.getElementById('cd-ring').style.stroke = phaseRings[color];
+  // Update countdown display
+  updateCountdownDisplay(color, autoRemaining, duration);
+  updateSequenceCards(color);
+  updateBlinkBadge(false);
 
-  autoCountdown = dur;
-  updateCountdown(dur, dur);
+  logActivity(color, 'Phase → ' + color.toUpperCase() + ' · ' + duration + 's · PH standard');
 
-  clearInterval(autoCountdownTimer);
-  autoCountdownTimer = setInterval(() => {
-    autoCountdown--;
-    updateCountdown(autoCountdown, dur);
-    if(autoCountdown <= 0) clearInterval(autoCountdownTimer);
-  }, 1000);
+  // ── Countdown: fires every 1 second ──
+  countdownTimer = setInterval(() => {
+    if (!autoRunning) { clearInterval(countdownTimer); return; }
+    autoRemaining--;
+    updateCountdownDisplay(color, autoRemaining, duration);
+    updateDBDisplay();
+    supabaseUpdate(); // push remaining time every second
 
-  logActivity(color, 'Auto phase → ' + color.charAt(0).toUpperCase()+color.slice(1) + ' · ' + dur + 's');
+    // Enter blink window (RED and GREEN only, not YELLOW)
+    if (!isBlinking && color !== 'yellow' && autoRemaining <= BLINK_THRESHOLD && autoRemaining > 0) {
+      isBlinking = true;
+      blinkVisible = false; // start with OFF for visible flash
+      updateBlinkBadge(true);
+      logActivity(color, '⚡ Blink started · ' + autoRemaining + 's remaining');
 
-  autoTimer = setTimeout(() => {
-    autoPhase = (autoPhase + 1) % 3;
-    if(autoPhase === 0) {
-      cycleCount++;
-      document.getElementById('s-cycles').textContent = cycleCount;
+      // Start blink timer at 2Hz
+      blinkTimer = setInterval(() => {
+        if (!autoRunning || !isBlinking) { clearInterval(blinkTimer); blinkTimer = null; return; }
+        blinkVisible = !blinkVisible;
+        // Toggle the physical light appearance
+        const tl = document.getElementById('tl-' + color);
+        if (tl) tl.className = 'tl-light ' + (blinkVisible ? 'on-' : 'off-') + color;
+        // Toggle seq card blink visual
+        const seqCard = document.getElementById('seq-card-' + color);
+        if (seqCard) seqCard.classList.toggle('blinking', !blinkVisible);
+      }, BLINK_INTERVAL);
     }
-    runPhase();
-  }, dur * 1000);
+
+    // Phase complete → advance to next phase
+    if (autoRemaining <= 0) {
+      clearInterval(countdownTimer);
+      clearInterval(blinkTimer);
+      blinkTimer = null;
+      isBlinking = false;
+      blinkVisible = true;
+
+      // Restore light to solid-on briefly before transition
+      applyLightUI(color, true);
+
+      const nextPhaseIdx = (autoPhaseIndex + 1) % PH_CYCLE.length;
+      if (nextPhaseIdx === 0) {
+        cycleCount++;
+        document.getElementById('s-cycles').textContent = cycleCount;
+        logActivity('s', '✓ Cycle #' + cycleCount + ' complete · RED → GREEN → YELLOW');
+      }
+
+      // Small delay so last second renders cleanly before transition
+      setTimeout(() => enterPhase(nextPhaseIdx), 100);
+    }
+  }, 1000);
 }
 
-function updateCountdown(remaining, total) {
-  document.getElementById('cd-num').textContent = remaining;
+// ═══════════════════════════════════════════════════════
+//  UI UPDATE HELPERS
+// ═══════════════════════════════════════════════════════
+const phaseColors = { red: 'var(--red)', yellow: 'var(--yellow)', green: 'var(--green)' };
+
+function updateCountdownDisplay(color, remaining, total) {
+  document.getElementById('cd-num').textContent   = remaining;
+  document.getElementById('cd-name').textContent  = color.charAt(0).toUpperCase() + color.slice(1);
+  document.getElementById('cd-name').style.color  = phaseColors[color];
+  document.getElementById('cd-orb').style.background = phaseColors[color];
+  document.getElementById('cd-orb').style.boxShadow  = '0 0 12px ' + phaseColors[color];
+  document.getElementById('cd-num').style.color   = phaseColors[color];
+  document.getElementById('cd-ring').style.stroke = phaseColors[color];
   const offset = circumference - (remaining / total) * circumference;
-  document.getElementById('cd-ring').style.strokeDashoffset = offset;
+  document.getElementById('cd-ring').style.strokeDashoffset = Math.max(0, offset);
 }
 
-// ── DB UPDATE (local display only) ──
-function updateDB() {
-  const ts = new Date().toTimeString().slice(0,8);
+function updateSequenceCards(activeColor) {
+  PH_CYCLE.forEach((c, i) => {
+    const card = document.getElementById('seq-card-' + c);
+    const st   = document.getElementById('seq-st-' + c);
+    const isCurrent = c === activeColor;
+    card.classList.toggle('current', isCurrent);
+    card.classList.remove('blinking');
+    if (isCurrent) st.textContent = 'Active ●';
+    else st.textContent = 'Waiting';
+  });
+  // Update mini sequence dots (PH order: R → G → Y)
+  document.getElementById('seq-r').classList.toggle('active', activeColor === 'red');
+  document.getElementById('seq-g').classList.toggle('active', activeColor === 'green');
+  document.getElementById('seq-y').classList.toggle('active', activeColor === 'yellow');
+}
+
+function updateBlinkBadge(blinking) {
+  const badge = document.getElementById('blink-badge');
+  const label = document.getElementById('blink-label');
+  if (blinking) {
+    badge.className = 'blink-badge active-blink';
+    label.textContent = 'Blinking · 2Hz';
+  } else {
+    badge.className = 'blink-badge';
+    label.textContent = 'Steady';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  DB DISPLAY UPDATE (local visual only)
+// ═══════════════════════════════════════════════════════
+function updateDBDisplay() {
+  const ts = new Date().toTimeString().slice(0, 8);
   document.getElementById('db-ts').textContent = ts;
-  document.getElementById('db-mode').textContent = currentMode;
-  document.getElementById('db-mode').className = 'c-on';
-  document.getElementById('db-mode').style.color = currentMode==='auto' ? 'var(--accent2)' : 'var(--muted)';
+
+  const modeEl = document.getElementById('db-mode');
+  modeEl.textContent = currentMode;
+  modeEl.className   = 'c-on';
+  modeEl.style.color = currentMode === 'auto' ? 'var(--accent2)' : 'var(--muted)';
+
+  const remEl = document.getElementById('db-remaining');
+  remEl.textContent = autoRunning ? autoRemaining + 's' : '—';
+  remEl.style.color = autoRunning ? phaseColors[PH_CYCLE[autoPhaseIndex]] : '';
+
+  const blinkEl = document.getElementById('db-blink');
+  blinkEl.textContent = isBlinking ? 'true' : 'false';
+  blinkEl.style.color = isBlinking ? 'var(--yellow)' : '';
 }
 
-// ── STATS ──
+// ═══════════════════════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════════════════════
 function updateStats() {
   cmdCount++;
   document.getElementById('s-cmds').textContent = cmdCount;
-  const active = Object.values(state).filter(Boolean).length;
+  const active = autoRunning
+    ? (blinkVisible ? 1 : 0)
+    : Object.values(manualState).filter(Boolean).length;
   document.getElementById('s-active').innerHTML = active + '<span class="stat-unit">/3</span>';
 }
 
-// ── ACTIVITY LOG ──
+// ═══════════════════════════════════════════════════════
+//  ACTIVITY LOG
+// ═══════════════════════════════════════════════════════
 function logActivity(type, msg) {
   const feed = document.getElementById('act-feed');
-  const ts   = new Date().toTimeString().slice(0,8);
+  const ts   = new Date().toTimeString().slice(0, 8);
   const item = document.createElement('div');
   item.className = 'act-item';
   const dotClass = type==='red'?'r':type==='yellow'?'y':type==='green'?'g':type==='a'?'a':'s';
   item.innerHTML = `<div class="act-dot ${dotClass}"></div><div class="act-msg">${msg}</div><div class="act-time">${ts}</div>`;
   feed.insertBefore(item, feed.firstChild);
-  while(feed.children.length > 8) feed.removeChild(feed.lastChild);
+  while (feed.children.length > 10) feed.removeChild(feed.lastChild);
 }
 
-// Init
-applyState();
+// ── Init ──
+applyManualState();
 </script>
 </body>
 </html>
